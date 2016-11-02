@@ -97,14 +97,7 @@
                     <dockerDirectory>.</dockerDirectory>
                     <serverId>docker-hub</serverId>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <!-- run mvn docker:build -->
             </plugin>
         </plugins>
     </build>
