@@ -1,6 +1,5 @@
 package org.ilaborie.cat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ilaborie.cat.Cat.CatRace;
 import org.jooby.*;
 import org.jooby.json.Jackson;
@@ -11,46 +10,42 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NON_PRIVATE;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.GETTER;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.SETTER;
 import static org.jooby.Status.NOT_FOUND;
 
 public class App extends Jooby {
 
-    {
+    public static void main(final String[] args) throws Exception {
+        new App().start(args);
+    }
+
+    public App() {
         // JSON mapping
-        ObjectMapper mapper = new ObjectMapper()
-                .setVisibility(GETTER, NON_PRIVATE)
-                .setVisibility(SETTER, NON_PRIVATE);
-        use(new Jackson(mapper));
+        use(new Jackson());
+
+        // FIXME Hello World
 
         use("/api/cats")
-                .get(this::findAll)
-                .get("/:id", this::findById)
-                .post(this::create)
-                .put(this::update)
-                .delete("/:id", req -> this.delete(req))
-                .produces("json")
-                .consumes("json");
+            .get(this::findAll)
+            .get("/:id", this::findById)
+            .post(this::create)
+            .put(this::update)
+            .delete("/:id", (Route.OneArgHandler) this::delete)
+            .produces("json")
+            .consumes("json");
 
         // Create felines herd
         onStart(registry -> {
             DB db = registry.require(DB.class);
             List<CatRace> races = Arrays.asList(CatRace.values());
             Supplier<CatRace> randomRace = () -> {
-                Collections.shuffle(races);
+                Collections.shuffle(races); // XXX Evil side effect
                 return races.get(0);
             };
             // every decent cat have an Egyptian God name
             Stream.of("Isis", "Nut", "Anubis", "Osiris", "Thoth")
-                    .map(name -> new Cat(name, randomRace.get()))
-                    .forEach(db::save);
+                  .map(name -> new Cat(name, randomRace.get()))
+                  .forEach(db::save);
         });
-    }
-
-    public static void main(final String[] args) throws Exception {
-        new App().start(args);
     }
 
     private List<Cat> findAll(Request req) {
@@ -61,11 +56,7 @@ public class App extends Jooby {
     private Cat findById(Request req) {
         String id = req.param("id").value();
         DB db = req.require(DB.class);
-        Cat cat = db.find(id);
-        if (cat == null) {
-            throw new Err(NOT_FOUND);
-        }
-        return cat;
+        return db.find(id).orElseThrow(() -> new Err(NOT_FOUND));
     }
 
     private Cat create(Request req) throws Exception {

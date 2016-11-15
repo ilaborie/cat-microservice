@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -19,8 +20,8 @@ public class DB {
                 .collect(Collectors.toList());
     }
 
-    public Cat find(String id) {
-        return db.get(id);
+    public Optional<Cat> find(String id) {
+        return Optional.ofNullable(db.get(id));
     }
 
     public void save(Cat cat) {

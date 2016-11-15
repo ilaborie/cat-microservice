@@ -18,7 +18,7 @@
         <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
         <docker.maven.version>0.4.13</docker.maven.version>
 
-        <jooby.version>1.0.0.CR8</jooby.version>
+        <jooby.version>1.0.0</jooby.version>
         <logback.version>1.1.7</logback.version>
 
         <docker.image>ilaborie/cats-microservice</docker.image>

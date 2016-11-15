@@ -3,18 +3,18 @@ package org.ilaborie.cat;
 import java.util.Objects;
 import java.util.UUID;
 
-class Cat {
+public class Cat {
 
     private String id;
     private String name;
     private CatRace race;
 
-    Cat() {
+    public Cat() {
         super();
         this.id = UUID.randomUUID().toString();
     }
 
-    Cat(String name, CatRace race) {
+    public Cat(String name, CatRace race) {
         this();
         this.race = race;
         this.name = name;
@@ -38,23 +38,23 @@ class Cat {
         return Objects.hash(id);
     }
 
-    String getId() {
+    public String getId() {
         return id;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    CatRace getRace() {
+    public CatRace getRace() {
         return race;
     }
 
-    void setRace(CatRace race) {
+    public void setRace(CatRace race) {
         this.race = race;
     }
 
